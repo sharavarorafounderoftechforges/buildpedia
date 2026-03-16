@@ -57,6 +57,73 @@ export type Database = {
           },
         ]
       }
+      founder_badges: {
+        Row: {
+          awarded_at: string
+          badge_label: string
+          badge_type: string
+          id: string
+          page_id: string
+        }
+        Insert: {
+          awarded_at?: string
+          badge_label: string
+          badge_type: string
+          id?: string
+          page_id: string
+        }
+        Update: {
+          awarded_at?: string
+          badge_label?: string
+          badge_type?: string
+          id?: string
+          page_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_badges_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "founder_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      founder_metrics: {
+        Row: {
+          id: string
+          metric_name: string
+          metric_type: string | null
+          metric_value: string
+          page_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          metric_name: string
+          metric_type?: string | null
+          metric_value: string
+          page_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          metric_name?: string
+          metric_type?: string | null
+          metric_value?: string
+          page_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_metrics_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "founder_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       founder_pages: {
         Row: {
           build_score: number
