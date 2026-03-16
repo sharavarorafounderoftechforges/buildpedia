@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Plus, Trophy, LogIn, LogOut, User } from "lucide-react";
+import { Search, Plus, Trophy, LogIn, LogOut, User, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,17 +22,17 @@ const SiteHeader = () => {
 
         <nav className="hidden md:flex items-center gap-1">
           <Button variant="ghost" size="sm" onClick={() => navigate("/search")} className="gap-1.5 text-muted-foreground">
-            <Search className="h-4 w-4" />
-            Search
+            <Search className="h-4 w-4" /> Search
           </Button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/leaderboard")} className="gap-1.5 text-muted-foreground">
-            <Trophy className="h-4 w-4" />
-            Leaderboard
+            <Trophy className="h-4 w-4" /> Leaderboard
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/donation")} className="gap-1.5 text-muted-foreground">
+            <Heart className="h-4 w-4" /> Donate
           </Button>
           {user && (
             <Button variant="ghost" size="sm" onClick={() => navigate("/create")} className="gap-1.5 text-muted-foreground">
-              <Plus className="h-4 w-4" />
-              Create Page
+              <Plus className="h-4 w-4" /> Create Page
             </Button>
           )}
         </nav>
@@ -50,8 +50,7 @@ const SiteHeader = () => {
             </>
           ) : (
             <Button variant="default" size="sm" onClick={() => navigate("/auth")} className="gap-1.5">
-              <LogIn className="h-4 w-4" />
-              Sign In
+              <LogIn className="h-4 w-4" /> Sign In
             </Button>
           )}
         </div>

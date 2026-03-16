@@ -12,6 +12,8 @@ import SearchPage from "./pages/SearchPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import CreatePage from "./pages/CreatePage";
 import EditPage from "./pages/EditPage";
+import ProfilePage from "./pages/ProfilePage";
+import DonationPage from "./pages/DonationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/create" element={<CreatePage />} />
             <Route path="/edit/:slug" element={<EditPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/donation" element={<DonationPage />} />
             <Route path="/:slug" element={<FounderPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

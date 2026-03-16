@@ -5,12 +5,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Share2, ShieldCheck, Eye, Rocket, Flag, Calendar } from "lucide-react";
+import { Edit, ShieldCheck, Eye, Rocket, Flag, Calendar, Settings } from "lucide-react";
 import { toast } from "sonner";
 import FounderTimeline from "@/components/founder/FounderTimeline";
 import FounderStartups from "@/components/founder/FounderStartups";
 import FounderProducts from "@/components/founder/FounderProducts";
 import FounderAnalytics from "@/components/founder/FounderAnalytics";
+import FounderBadges from "@/components/founder/FounderBadges";
+import FounderMetrics from "@/components/founder/FounderMetrics";
+import FounderShareCard from "@/components/founder/FounderShareCard";
+import FounderClaimSection from "@/components/founder/FounderClaimSection";
+import FounderManageSection from "@/components/founder/FounderManageSection";
 import ReactMarkdown from "react-markdown";
 
 const FounderPage = () => {
@@ -35,11 +40,7 @@ const FounderPage = () => {
   const { data: milestones } = useQuery({
     queryKey: ["milestones", founder?.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("milestones")
-        .select("*")
-        .eq("page_id", founder!.id)
-        .order("date", { ascending: true });
+      const { data } = await supabase.from("milestones").select("*").eq("page_id", founder!.id).order("date", { ascending: true });
       return data ?? [];
     },
     enabled: !!founder?.id,
@@ -48,11 +49,7 @@ const FounderPage = () => {
   const { data: products } = useQuery({
     queryKey: ["products", founder?.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("product_launches")
-        .select("*")
-        .eq("page_id", founder!.id)
-        .order("launch_date", { ascending: false });
+      const { data } = await supabase.from("product_launches").select("*").eq("page_id", founder!.id).order("launch_date", { ascending: false });
       return data ?? [];
     },
     enabled: !!founder?.id,
@@ -63,7 +60,6 @@ const FounderPage = () => {
     queryKey: ["track-view", founder?.id],
     queryFn: async () => {
       await supabase.from("page_views").insert({ page_id: founder!.id });
-      // Increment view count
       await supabase.rpc("increment_view_count", { page_id_param: founder!.id });
       return true;
     },
@@ -71,10 +67,19 @@ const FounderPage = () => {
     staleTime: Infinity,
   });
 
+  // Get rank
+  const { data: rank } = useQuery({
+    queryKey: ["founder-rank", founder?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("founder_pages").select("id").order("build_score", { ascending: false });
+      const idx = data?.findIndex((f) => f.id === founder!.id);
+      return idx !== undefined && idx >= 0 ? idx + 1 : undefined;
+    },
+    enabled: !!founder?.id,
+  });
+
   if (isLoading) {
-    return (
-      <div className="buildpedia-container py-20 text-center text-muted-foreground">Loading...</div>
-    );
+    return <div className="buildpedia-container py-20 text-center text-muted-foreground">Loading...</div>;
   }
 
   if (!founder) {
@@ -87,26 +92,21 @@ const FounderPage = () => {
             Create this page
           </Button>
         ) : (
-          <Button onClick={() => navigate("/auth")} variant="outline">
-            Sign in to create this page
-          </Button>
+          <Button onClick={() => navigate("/auth")} variant="outline">Sign in to create this page</Button>
         )}
       </div>
     );
   }
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("Link copied to clipboard");
-  };
+  const tabs = ["overview", "timeline", "startups", "products", "metrics", "analytics"];
+  if (user) tabs.push("manage");
 
   return (
     <div className="buildpedia-container py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
-        {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
         <div>
           {/* Header */}
-          <div className="flex items-start gap-4 mb-6">
+          <div className="flex items-start gap-4 mb-4">
             <div className="h-16 w-16 rounded-lg bg-secondary flex items-center justify-center text-foreground font-display text-3xl shrink-0 overflow-hidden">
               {founder.profile_image_url ? (
                 <img src={founder.profile_image_url} alt={founder.founder_name} className="h-full w-full object-cover" />
@@ -124,6 +124,7 @@ const FounderPage = () => {
                 )}
               </div>
               <p className="text-muted-foreground mt-1">{founder.summary}</p>
+              <FounderBadges pageId={founder.id} />
             </div>
           </div>
 
@@ -134,26 +135,18 @@ const FounderPage = () => {
                 <Edit className="h-3.5 w-3.5" /> Edit
               </Button>
             )}
-            <Button variant="outline" size="sm" onClick={handleShare} className="gap-1.5">
-              <Share2 className="h-3.5 w-3.5" /> Share
-            </Button>
-            {user && !founder.verified_founder && (
-              <Button variant="outline" size="sm" className="gap-1.5 text-accent" onClick={() => toast.info("Claim verification coming soon")}>
-                <ShieldCheck className="h-3.5 w-3.5" /> Claim Page
-              </Button>
-            )}
           </div>
 
           {/* Tabs */}
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="w-full justify-start bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
-              {["overview", "timeline", "startups", "products", "analytics"].map((tab) => (
+            <TabsList className="w-full justify-start bg-transparent border-b border-border rounded-none h-auto p-0 gap-0 flex-wrap">
+              {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab}
                   value={tab}
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5 capitalize text-sm"
                 >
-                  {tab}
+                  {tab === "manage" ? <><Settings className="h-3.5 w-3.5 mr-1" /> Manage</> : tab}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -176,14 +169,24 @@ const FounderPage = () => {
               <FounderProducts products={products ?? []} />
             </TabsContent>
 
+            <TabsContent value="metrics" className="mt-6">
+              <FounderMetrics pageId={founder.id} />
+            </TabsContent>
+
             <TabsContent value="analytics" className="mt-6">
               <FounderAnalytics pageId={founder.id} viewCount={founder.view_count ?? 0} />
             </TabsContent>
+
+            {user && (
+              <TabsContent value="manage" className="mt-6">
+                <FounderManageSection pageId={founder.id} founderId={founder.id} slug={founder.slug} currentImageUrl={founder.profile_image_url} />
+              </TabsContent>
+            )}
           </Tabs>
         </div>
 
-        {/* Sidebar - Quick Facts */}
-        <aside className="lg:sticky lg:top-20 h-fit">
+        {/* Sidebar */}
+        <aside className="lg:sticky lg:top-20 h-fit space-y-4">
           <div className="border border-border rounded-lg p-4 bg-card">
             <h3 className="font-display text-lg text-foreground mb-4">Quick Facts</h3>
             <dl className="space-y-3 text-sm">
@@ -191,6 +194,12 @@ const FounderPage = () => {
                 <dt className="text-muted-foreground flex items-center gap-1.5"><Rocket className="h-3.5 w-3.5" /> Build Score</dt>
                 <dd className="text-success font-semibold">{founder.build_score ?? 0}</dd>
               </div>
+              {rank && (
+                <div className="flex items-center justify-between">
+                  <dt className="text-muted-foreground">Global Rank</dt>
+                  <dd className="font-semibold text-foreground">#{rank}</dd>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" /> Page Views</dt>
                 <dd className="font-medium text-foreground">{(founder.view_count ?? 0).toLocaleString()}</dd>
@@ -205,6 +214,18 @@ const FounderPage = () => {
               </div>
             </dl>
           </div>
+
+          <FounderShareCard
+            founderName={founder.founder_name}
+            buildScore={founder.build_score ?? 0}
+            viewCount={founder.view_count ?? 0}
+            rank={rank}
+            slug={founder.slug}
+          />
+
+          {user && !founder.verified_founder && (
+            <FounderClaimSection pageId={founder.id} founderName={founder.founder_name} />
+          )}
         </aside>
       </div>
     </div>

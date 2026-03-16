@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { ShieldCheck, Loader2 } from "lucide-react";
 
 const CreatePage = () => {
   const navigate = useNavigate();
@@ -18,24 +19,58 @@ const CreatePage = () => {
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
   const [publishing, setPublishing] = useState(false);
+  const [moderating, setModerating] = useState(false);
+  const [modResult, setModResult] = useState<any>(null);
 
   if (!user) {
     navigate("/auth");
     return null;
   }
 
+  const runModeration = async (): Promise<boolean> => {
+    setModerating(true);
+    setModResult(null);
+    try {
+      const resp = await supabase.functions.invoke("moderate-content", {
+        body: { content, founderName: founderName.trim() },
+      });
+
+      if (resp.error) {
+        console.warn("Moderation error, auto-approving:", resp.error);
+        setModResult({ approved: true, summary: "Auto-approved" });
+        return true;
+      }
+
+      const result = resp.data;
+      setModResult(result);
+
+      if (!result.approved) {
+        toast.error(`Content not approved: ${result.summary}`);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.warn("Moderation failed, auto-approving");
+      return true;
+    } finally {
+      setModerating(false);
+    }
+  };
+
   const handlePublish = async () => {
     if (!founderName.trim()) { toast.error("Founder name is required"); return; }
+    if (content.length < 50) { toast.error("Content must be at least 50 characters"); return; }
+
     setPublishing(true);
+
+    // Run AI moderation
+    const approved = await runModeration();
+    if (!approved) { setPublishing(false); return; }
 
     const slug = founderName.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    // Check slug uniqueness
     const { data: existing } = await supabase.from("founder_pages").select("id").eq("slug", slug).maybeSingle();
     if (existing) { toast.error("A page with this name already exists"); setPublishing(false); return; }
-
-    // Basic content checks
-    if (content.length < 50) { toast.error("Content must be at least 50 characters for quality"); setPublishing(false); return; }
 
     const { error } = await supabase.from("founder_pages").insert({
       slug,
@@ -90,9 +125,28 @@ const CreatePage = () => {
           <p className="text-xs text-muted-foreground mt-1">{content.length} characters</p>
         </div>
 
+        {modResult && (
+          <div className={`border rounded-lg p-4 text-sm ${modResult.approved ? "border-success/30 bg-success/5" : "border-destructive/30 bg-destructive/5"}`}>
+            <div className="flex items-center gap-2 mb-1">
+              <ShieldCheck className={`h-4 w-4 ${modResult.approved ? "text-success" : "text-destructive"}`} />
+              <span className="font-medium text-foreground">{modResult.approved ? "Content Approved" : "Content Rejected"}</span>
+              {modResult.quality_score != null && (
+                <span className="text-xs text-muted-foreground ml-auto">Quality: {modResult.quality_score}/100</span>
+              )}
+            </div>
+            <p className="text-muted-foreground">{modResult.summary}</p>
+            {modResult.issues?.length > 0 && (
+              <ul className="mt-2 text-xs text-destructive list-disc pl-4">
+                {modResult.issues.map((issue: string, i: number) => <li key={i}>{issue}</li>)}
+              </ul>
+            )}
+          </div>
+        )}
+
         <div className="flex gap-3">
-          <Button onClick={handlePublish} disabled={publishing}>
-            {publishing ? "Publishing..." : "Publish Page"}
+          <Button onClick={handlePublish} disabled={publishing || moderating}>
+            {moderating ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Checking content...</> :
+             publishing ? "Publishing..." : "Publish Page"}
           </Button>
           <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
         </div>
