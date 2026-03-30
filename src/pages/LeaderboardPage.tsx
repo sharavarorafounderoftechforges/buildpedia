@@ -30,7 +30,7 @@ const LeaderboardPage = () => {
           <thead>
             <tr className="border-b border-border bg-card">
               <th className="text-left py-3 px-4 text-muted-foreground font-medium w-12">#</th>
-              <th className="text-left py-3 px-4 text-muted-foreground font-medium">Founder</th>
+              <th className="text-left py-3 px-4 text-muted-foreground font-medium">Builder</th>
               <th className="text-right py-3 px-4 text-muted-foreground font-medium">Build Score</th>
               <th className="text-right py-3 px-4 text-muted-foreground font-medium hidden sm:table-cell">Views</th>
             </tr>
@@ -63,7 +63,7 @@ const LeaderboardPage = () => {
           </tbody>
         </table>
         {(!founders || founders.length === 0) && (
-          <div className="py-12 text-center text-muted-foreground">No founder pages yet.</div>
+          <div className="py-12 text-center text-muted-foreground">No builder pages yet.</div>
         )}
       </div>
     </div>

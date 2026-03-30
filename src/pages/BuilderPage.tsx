@@ -7,15 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Edit, ShieldCheck, Eye, Rocket, Flag, Calendar, Settings } from "lucide-react";
 import { toast } from "sonner";
-import FounderTimeline from "@/components/founder/FounderTimeline";
-import FounderStartups from "@/components/founder/FounderStartups";
-import FounderProducts from "@/components/founder/FounderProducts";
-import FounderAnalytics from "@/components/founder/FounderAnalytics";
-import FounderBadges from "@/components/founder/FounderBadges";
-import FounderMetrics from "@/components/founder/FounderMetrics";
-import FounderShareCard from "@/components/founder/FounderShareCard";
-import FounderClaimSection from "@/components/founder/FounderClaimSection";
-import FounderManageSection from "@/components/founder/FounderManageSection";
+import FounderTimeline from "@/components/builder/BuilderTimeline";
+import FounderStartups from "@/components/builder/BuilderStartups";
+import FounderProducts from "@/components/builder/BuilderProducts";
+import FounderAnalytics from "@/components/builder/BuilderAnalytics";
+import FounderBadges from "@/components/builder/BuilderBadges";
+import FounderMetrics from "@/components/builder/BuilderMetrics";
+import FounderShareCard from "@/components/builder/BuilderShareCard";
+import FounderClaimSection from "@/components/builder/BuilderClaimSection";
+import FounderManageSection from "@/components/builder/BuilderManageSection";
 import ReactMarkdown from "react-markdown";
 
 const FounderPage = () => {

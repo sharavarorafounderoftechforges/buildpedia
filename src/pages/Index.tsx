@@ -51,7 +51,7 @@ const Index = () => {
             Buildpedia
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl mb-10 max-w-xl mx-auto font-body">
-            The open encyclopedia for founders, builders, and the startups they create.
+            The open encyclopedia for builders, founders and the startups they create.
           </p>
           <form onSubmit={handleSearch} className="max-w-xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -66,7 +66,7 @@ const Index = () => {
             </Button>
           </form>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {["Sharav Arora", "Elon Musk", "Sam Altman"].map((name) => (
+            {["Sharav Arora", "Elon Musk", "Caleb Wodi"].map((name) => (
               <Badge
                 key={name}
                 variant="secondary"
@@ -86,7 +86,7 @@ const Index = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-accent" />
-              <h2 className="font-display text-2xl text-foreground">Trending Founders</h2>
+              <h2 className="font-display text-2xl text-foreground">Trending Builders/Founders</h2>
             </div>
             <Button variant="ghost" size="sm" onClick={() => navigate("/leaderboard")} className="gap-1 text-muted-foreground">
               View all <ArrowRight className="h-4 w-4" />
@@ -98,7 +98,7 @@ const Index = () => {
             ))}
             {(!trendingFounders || trendingFounders.length === 0) && (
               <div className="col-span-full text-center py-12 text-muted-foreground">
-                No founder pages yet. <Button variant="link" onClick={() => navigate("/create")} className="text-accent p-0">Create the first one.</Button>
+                No builder pages yet. <Button variant="link" onClick={() => navigate("/create")} className="text-accent p-0">Create the first one.</Button>
               </div>
             )}
           </div>

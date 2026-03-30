@@ -64,7 +64,7 @@ const SearchPage = () => {
 
         {!loading && query.trim() && results.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">No founders found for "{query}"</p>
+            <p className="text-muted-foreground mb-4">No builders found for "{query}"</p>
             <button onClick={() => navigate("/create", { state: { prefillName: query } })} className="text-accent hover:underline text-sm">
               Create a page for "{query}"
             </button>
