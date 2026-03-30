@@ -58,7 +58,7 @@ const Index = () => {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for a founder, startup, or product..."
+              placeholder="Search for a builder, founder, or startup..."
               className="pl-12 pr-4 h-14 text-base rounded-lg border-border bg-background shadow-sm"
             />
             <Button type="submit" size="sm" className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -86,7 +86,7 @@ const Index = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-accent" />
-              <h2 className="font-display text-2xl text-foreground">Trending Builders/Founders</h2>
+              <h2 className="font-display text-2xl text-foreground">Trending Builders</h2>
             </div>
             <Button variant="ghost" size="sm" onClick={() => navigate("/leaderboard")} className="gap-1 text-muted-foreground">
               View all <ArrowRight className="h-4 w-4" />
