@@ -7,18 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Edit, ShieldCheck, Eye, Rocket, Flag, Calendar, Settings } from "lucide-react";
 import { toast } from "sonner";
-import FounderTimeline from "@/components/founder/FounderTimeline";
-import FounderStartups from "@/components/founder/FounderStartups";
-import FounderProducts from "@/components/founder/FounderProducts";
-import FounderAnalytics from "@/components/founder/FounderAnalytics";
-import FounderBadges from "@/components/founder/FounderBadges";
-import FounderMetrics from "@/components/founder/FounderMetrics";
-import FounderShareCard from "@/components/founder/FounderShareCard";
-import FounderClaimSection from "@/components/founder/FounderClaimSection";
-import FounderManageSection from "@/components/founder/FounderManageSection";
+import BuilderTimeline from "@/components/builder/BuilderTimeline";
+import BuilderStartups from "@/components/builder/BuilderStartups";
+import BuilderProducts from "@/components/builder/BuilderProducts";
+import BuilderAnalytics from "@/components/builder/BuilderAnalytics";
+import BuilderBadges from "@/components/builder/BuilderBadges";
+import BuilderMetrics from "@/components/builder/BuilderMetrics";
+import BuilderShareCard from "@/components/builder/BuilderShareCard";
+import BuilderClaimSection from "@/components/builder/BuilderClaimSection";
+import BuilderManageSection from "@/components/builder/BuilderManageSection";
 import ReactMarkdown from "react-markdown";
 
-const FounderPage = () => {
+const BuilderPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -124,7 +124,7 @@ const FounderPage = () => {
                 )}
               </div>
               <p className="text-muted-foreground mt-1">{founder.summary}</p>
-              <FounderBadges pageId={founder.id} />
+              <BuilderBadges pageId={founder.id} />
             </div>
           </div>
 
@@ -158,28 +158,28 @@ const FounderPage = () => {
             </TabsContent>
 
             <TabsContent value="timeline" className="mt-6">
-              <FounderTimeline milestones={milestones ?? []} products={products ?? []} />
+              <BuilderTimeline milestones={milestones ?? []} products={products ?? []} />
             </TabsContent>
 
             <TabsContent value="startups" className="mt-6">
-              <FounderStartups pageId={founder.id} />
+              <BuilderStartups pageId={founder.id} />
             </TabsContent>
 
             <TabsContent value="products" className="mt-6">
-              <FounderProducts products={products ?? []} />
+              <BuilderProducts products={products ?? []} />
             </TabsContent>
 
             <TabsContent value="metrics" className="mt-6">
-              <FounderMetrics pageId={founder.id} />
+              <BuilderMetrics pageId={founder.id} />
             </TabsContent>
 
             <TabsContent value="analytics" className="mt-6">
-              <FounderAnalytics pageId={founder.id} viewCount={founder.view_count ?? 0} />
+              <BuilderAnalytics pageId={founder.id} viewCount={founder.view_count ?? 0} />
             </TabsContent>
 
             {user && (
               <TabsContent value="manage" className="mt-6">
-                <FounderManageSection pageId={founder.id} founderId={founder.id} slug={founder.slug} currentImageUrl={founder.profile_image_url} />
+                <BuilderManageSection pageId={founder.id} founderId={founder.id} slug={founder.slug} currentImageUrl={founder.profile_image_url} />
               </TabsContent>
             )}
           </Tabs>
@@ -215,7 +215,7 @@ const FounderPage = () => {
             </dl>
           </div>
 
-          <FounderShareCard
+          <BuilderShareCard
             founderName={founder.founder_name}
             buildScore={founder.build_score ?? 0}
             viewCount={founder.view_count ?? 0}
@@ -224,7 +224,7 @@ const FounderPage = () => {
           />
 
           {user && !founder.verified_founder && (
-            <FounderClaimSection pageId={founder.id} founderName={founder.founder_name} />
+            <BuilderClaimSection pageId={founder.id} founderName={founder.founder_name} />
           )}
         </aside>
       </div>
@@ -232,4 +232,4 @@ const FounderPage = () => {
   );
 };
 
-export default FounderPage;
+export default BuilderPage;

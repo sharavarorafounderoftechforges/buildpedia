@@ -7,7 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import SiteHeader from "@/components/SiteHeader";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
-import FounderPage from "./pages/FounderPage";
+import BuilderPage from "./pages/BuilderPage";
 import SearchPage from "./pages/SearchPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import CreatePage from "./pages/CreatePage";
@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/edit/:slug" element={<EditPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/donation" element={<DonationPage />} />
-            <Route path="/:slug" element={<FounderPage />} />
+            <Route path="/:slug" element={<BuilderPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

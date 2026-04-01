@@ -50,7 +50,7 @@ const AuthPage = () => {
           {isLogin ? "Sign in" : "Create account"}
         </h1>
         <p className="text-muted-foreground text-center text-sm mb-8">
-          {isLogin ? "Welcome back to Buildpedia" : "Join the founder encyclopedia"}
+          {isLogin ? "Welcome back to Buildpedia" : "Join the Builder encyclopedia"}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

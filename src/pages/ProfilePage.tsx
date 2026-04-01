@@ -87,7 +87,7 @@ const ProfilePage = () => {
       </div>
 
       <div className="border border-border rounded-lg p-6 bg-card">
-        <h2 className="font-display text-xl text-foreground mb-4">My Founder Pages</h2>
+        <h2 className="font-display text-xl text-foreground mb-4">My Builder Pages</h2>
         {myPages && myPages.length > 0 ? (
           <div className="space-y-2">
             {myPages.map((p) => (
